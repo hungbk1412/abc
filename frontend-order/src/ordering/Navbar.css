@@ -1,0 +1,15 @@
+.NavItem{
+    margin-right: 10px;
+    height: 100%;
+}
+#Navbar{
+    height: 50px;
+    background-color: #61dafb;
+}
+.Navbar-button{
+    width: 40px;
+}
+
+#Navbar-buttonGroup-2{
+
+}
