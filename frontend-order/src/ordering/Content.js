@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import Bill from "ordering/Bill";
-import Menu from "ordering/Menu";
-import Utilities from "ordering/Utilities";
+import Bill from "./Bill";
+import Menu from "./Menu";
+import Utilities from "./Utilities";
 import { Container, Col, Row } from "reactstrap";
 
 
@@ -17,7 +17,7 @@ class Content extends React.Component {
             <Utilities />
           </Col>
           <Col xs={5}>
-            <Menu/>
+            <Menu addButton={true} />
           </Col>
         </Row>
       </Container>

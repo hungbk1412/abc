@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 export default function orderReducer(state = {
     productType: [],
     products: {},
@@ -83,21 +84,36 @@ export default function orderReducer(state = {
             action.payload.map(elem =>{
                 productType.push(elem);
             });
-            console.log(productType);
+            break;
         }
         case "BILL_CREATED": {
             bill.items = []
             bill.totalPrice = 0;
             break;
         }
+        case 'CHECK_INSTOCK': {
+            let productLength = products.length;
+            console.log('action.payload[id]', action.payload.data);
+            for (let i = 0; i < productLength; i++) {
+                if (products[i]['_id'] === action.payload.data['_id']) {
+                    console.log('products hihi', products[i]);
+                    products[i]['inStock'] = action.payload.data['inStock'];
+                    console.log('products hihi', products[i]);
+                    // break;
+                }
+            }
+            break;
+        }
     }
     bill.items.forEach((elem) => {
         elem.total = elem.price * elem.quantity;
     });
+
     let temp_cost = bill.items.reduce(function (total, elem) {
         total = total + elem.price * elem.quantity;
         return total;
     }, 0);
+    
     bill.totalPrice = temp_cost + temp_cost * temp_vat - temp_discount * temp_cost * 0.01;
     return {
         ...state,

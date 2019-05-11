@@ -11,7 +11,7 @@ const billModel = new Schema (
                 note: {type: String},
                 price: {type: Number, required: true},
                 total: {type: Number},
-                store
+                store: {type: Schema.Types.ObjectId, ref: "Store"}
             }
         ],
         totalPrice: {type: Number},

@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const session = require("express-session");
 
 mongoose.connect("mongodb://localhost:27017/coffee", { useNewUrlParser: true });
 const db = mongoose.connection;
@@ -29,6 +30,13 @@ app.use(function(err, req, res, next) {
   res.render("error");
 });
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 app.use(
   session({
     secret: "cangvonghiacangtot",
@@ -41,10 +49,6 @@ app.use(
     }
   })
 );
-
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
 
 app.use(cors());
 app.use(logger("dev"));

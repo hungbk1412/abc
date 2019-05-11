@@ -1,8 +1,7 @@
-var express = require("express");
-var router = express.Router();
-var Product = require("../models/product");
-var ProductType = require("../models/productType");
-var Bill = require("../models/bill");
+const express = require("express");
+const router = express.Router();
+const Product = require("../models/product");
+const Bill = require("../models/bill");
 /* GET home page. */
 
 
@@ -34,13 +33,4 @@ router.post("/create-bill", (req, res, next) => {
     });    
 })
 
-router.post("/product-type", function(req, res, next) {
-    let productType = new ProductType(req.body);
-    console.log('req.body', req.body);
-    productType.save().catch(err=>{
-        console.log(err)
-    }).then(() => {
-        res.send("success");
-    });
-})
 module.exports = router;

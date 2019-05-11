@@ -17,6 +17,7 @@ const billModel = new Schema (
     {
         items: [
             {
+                _id: false,
                 productId: {type: Schema.Types.ObjectId, ref: "Product", required: true},
                 name: {type: String},
                 quantity: {type: Number, required: true},
@@ -25,6 +26,7 @@ const billModel = new Schema (
                 total: {type: Number},
             }
         ],
+        date: String,
         totalPrice: {type: Number},
         employee: {type: Schema.Types.ObjectId, ref: "Employee"}
     },

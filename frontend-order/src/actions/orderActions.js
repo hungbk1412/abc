@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../axios-store";
 export function removeDrink(drink) {
   return {
     type: "REMOVE_DRINK",
@@ -39,7 +39,7 @@ export function addProduct(product) {
 }
 export function getProducts() {
   return function(dispatch) {
-    axios.get("http://localhost:5000/products").then(res=>{
+    axios.get("/api/order/products").then(res=>{
       dispatch({
         type: "GET_PRODUCTS",
         payload: res.data,
@@ -49,7 +49,7 @@ export function getProducts() {
 }
 export function getProductTypes(){
   return function(dispatch){
-    axios.get("http://localhost:5000/product-type").then(res=>{
+    axios.get("/api/order/product-type").then(res=>{
       dispatch({
         type: "GET_PRODUCT_TYPE",
         payload: res.data,
@@ -60,10 +60,21 @@ export function getProductTypes(){
 
 export function createBill(bill){
   return function(dispatch){
-    axios.post("http://localhost:5000/create-bill", bill).then(res=>{
+    axios.post("/api/order/create-bill", bill).then(res=>{
       dispatch({
         type: "BILL_CREATED",
       });
+    })
+  }
+}
+
+export function checkInStock(product) {
+  return function (dispatch) {
+    axios.post('/api/order/update-status-instock', product).then(res => {
+      dispatch({
+        type: 'CHECK_INSTOCK',
+        payload: res
+      })
     })
   }
 }

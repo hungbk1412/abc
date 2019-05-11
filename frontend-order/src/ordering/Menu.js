@@ -9,13 +9,13 @@ import {
     ListGroupItemHeading,
 } from "reactstrap";
 import {connect} from "react-redux";
-import {addProduct, getProducts, getProductTypes} from "actions/orderActions";
+import {addProduct, getProducts, getProductTypes, checkInStock} from "../actions/orderActions";
 
 class Menu extends React.Component {
     constructor(props) {
         super(props);
     }
-
+    
     componentDidMount() {
         this.props.getProductTypes();
         this.props.getProducts();
@@ -49,6 +49,8 @@ class Menu extends React.Component {
                                         </ListGroupItemHeading>
                                         {
                                             this.props.products.filter(product => product.type.type == type.type).map((product) => {
+                                                // console.log(product);
+                                                
                                             return (
                                                 <ListGroupItem
                                                     key={product["_id"]}
@@ -58,11 +60,22 @@ class Menu extends React.Component {
                                                     <div className={"MenuJs-price"}>{product["price"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND
                                                     </div>
                                                     <Button
+                                                        disabled = {!product['inStock']}
                                                         color={"link"}
                                                         className={"ml-auto"}
                                                         onClick={() => this.props.addProduct(product)}
+                                                        style={ this.props.addButton === true ? null : {'display': 'none'}}
                                                     >
                                                         Add
+                                                    </Button>
+                                                    <Button 
+                                                        className={"ml-auto"} 
+                                                        style={this.props.inStockButton === true ? null : { 'display': 'none' }} 
+                                                        color={product.inStock ? "danger" : 'success'} 
+                                                        size="sm"
+                                                        onClick={() => this.props.checkInStock(product['_id'], product.inStock)}
+                                                    >
+                                                        {product.inStock ? 'Báo hết hàng' : 'Báo còn hàng'}
                                                     </Button>
                                                 </ListGroupItem>
                                             )
@@ -95,6 +108,11 @@ const mapDispatchToProps = dispatch => {
         },
         getProductTypes: () => {
             dispatch(getProductTypes());
+        },
+        checkInStock: (productId, inStock) => {
+            let product = Object.assign({}, {productId: productId, inStock: inStock})
+            // console.log('product', product);
+            dispatch(checkInStock(product));
         }
     };
 };
