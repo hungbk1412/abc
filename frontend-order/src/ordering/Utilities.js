@@ -11,7 +11,7 @@ import {
     DropdownToggle,
 } from 'reactstrap';
 import {connect} from 'react-redux';
-import {changeVAT, changeDiscount, createBill} from 'actions/orderActions';
+import {changeVAT, changeDiscount, createBill, createTempOrder} from 'actions/orderActions';
 
 
 class Utilities extends React.Component {
@@ -22,30 +22,51 @@ class Utilities extends React.Component {
             isLeftToggled: false,
             isRightToggled: false
         };
-        this.handleLeftToggle = this.handleLeftToggle.bind(this);
-        this.handleRemoveGuest = this.handleRemoveGuest.bind(this);
-        this.handleRightToggle = this.handleRightToggle.bind(this);
+        // this.handleLeftToggle = this.handleLeftToggle.bind(this);
+        // this.handleRemoveGuest = this.handleRemoveGuest.bind(this);
+        // this.handleRightToggle = this.handleRightToggle.bind(this);
 
     }
 
-    handleRemoveGuest() {
-        let button = document.getElementById("UtilitiesJs-guestButton");
-        button.style.display = "none";
-    }
+    // handleRemoveGuest() {
+    //     let button = document.getElementById("UtilitiesJs-guestButton");
+    //     button.style.display = "none";
+    // }
 
-    handleLeftToggle() {
-        this.setState({
-            ...this.state,
-            isLeftToggled: !this.state.isLeftToggled
-        })
-    }
+    // handleLeftToggle() {
+    //     this.setState({
+    //         ...this.state,
+    //         isLeftToggled: !this.state.isLeftToggled
+    //     })
+    // }
 
+    // handleRightToggle() {
+    //     this.setState({
+    //         ...this.state,
+    //         isRightToggled: !this.state.isRightToggled
+    //     })
+    // }
 
-    handleRightToggle() {
-        this.setState({
-            ...this.state,
-            isRightToggled: !this.state.isRightToggled
-        })
+    createBill = (orders) => {
+        let bill = orders[0];
+        delete bill['done'];
+        for (let i = 0; i < orders.length; i++) {
+            for (let j = 0; j < orders[i].items.length; j++) {
+                delete orders[i].items[j]['served'];
+                if (i > 0) {
+                    let indexItemInMainBill = bill.items.findIndex(item => {
+                        return item['name'] === orders[i].items[j]['name']
+                    })
+                    if (indexItemInMainBill === -1) {
+                        bill.items.push(orders[i].items[j])
+                    } else {
+                        bill.items[indexItemInMainBill].quantity += orders[i].items[j].quantity;
+                        bill.items[indexItemInMainBill].total = bill.items[indexItemInMainBill].quantity * bill.items[indexItemInMainBill].price
+                    }
+                }
+            }
+        }
+        this.props.createBill(bill)
     }
 
     render() {
@@ -143,15 +164,15 @@ class Utilities extends React.Component {
                 <Row>
                     <Col xs={4} className={"pr-1"}>
                         <Button color={"primary"} className={"d-block"} block>Chuyển bàn</Button>
-                        <Button color={"primary"} className={"d-block"} block>Tách bàn</Button>
+                        {/* <Button color={"primary"} className={"d-block"} block>Tách bàn</Button> */}
                     </Col>
                     <Col xs={4} className={"pl-1 pr-1"}>
-                        <Button color={"primary"} className={"d-block"} block>Báo chế biến</Button>
-                        <Button color={"warning"} className={"d-block"} block>Tạm tính</Button>
+                        <Button onClick={()=>this.props.createTempOrder(this.props.bill, this.props.username)} color={"primary"} className={"d-block"} block>Báo chế biến</Button>
+                        {/* <Button color={"warning"} className={"d-block"} block>Tạm tính</Button> */}
                     </Col>
                     <Col xs={4} className={"pl-1"}>
                         <Button color={"danger"} className={"h-100"} block
-                                onClick={()=>this.props.createBill(this.props.bill)}>Thanh Toán</Button>
+                                onClick={()=>this.createBill(this.props.tempOrders)}>Thanh Toán</Button>
                     </Col>
                 </Row>
             </div>
@@ -161,6 +182,8 @@ class Utilities extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
+        tempOrders: state.order.tempOrders.orders,
+        username: state.auth.username,
         bill: state.order.bill,
         cost: state.order.cost,
         total: state.order.bill.totalPrice,
@@ -178,6 +201,14 @@ const mapDispatchToProps = (dispatch) => {
         },
         createBill: (bill) => {
             dispatch(createBill(bill))
+        },
+        createTempOrder: (bill, username) => {
+            let temp_cost = bill.items.reduce(function (total, elem) {
+                total = total + elem.price * elem.quantity;
+                return total;
+            }, 0);
+            bill.totalPrice = temp_cost;
+            dispatch(createTempOrder(bill, username));
         }
     };
 };

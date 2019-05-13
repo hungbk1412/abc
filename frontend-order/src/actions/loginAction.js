@@ -1,4 +1,4 @@
-// import axios from "../axios-store";
+import axios from "../axios-store";
 
 export function login(info) {
   return {
@@ -8,7 +8,11 @@ export function login(info) {
 }
 
 export function logout() {
-  return {
-    type: 'LOGOUT'
+  return function(dispatch) {
+    axios.get('/api/auth/logout').then(res => {
+      dispatch({
+        type: 'LOGOUT'
+      })
+    })
   }
 }

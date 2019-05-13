@@ -8,24 +8,48 @@ import {
     ListGroupItem,
     ListGroupItemHeading,
 } from "reactstrap";
+import openSocket from 'socket.io-client';
 import {connect} from "react-redux";
 import {addProduct, getProducts, getProductTypes, checkInStock} from "../actions/orderActions";
 
 class Menu extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    
+    state = {products: null}
+
     componentDidMount() {
         this.props.getProductTypes();
         this.props.getProducts();
+        const socket = openSocket('http://localhost:5000');
+        socket.on('order', data => {
+            if (data.action === 'checkInStock') {
+                this.props.getProducts();
+            }
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps !== this.props) {
+            this.setState({...this.state, products: this.props.products});
+        }
+    }
+
+    checkInStock = (id, inStock) => {
+        let products = this.state.products;
+        let productLength = products.length;
+        for (let i = 0; i < productLength; i++) {
+            if (products[i]['_id'] === id) {
+                products[i].inStock = !inStock;
+                this.setState({...this.state, products: products})
+                break;
+            }
+        }
+        this.props.checkInStock(id, inStock);
     }
 
     render() {
         return (
             <div>
                 <Row>
-                    <Col className={"text-center"}>
+                    {/* <Col className={"text-center"}>
                         <Button color={"secondary"} className={"MenuJs-headButton"}>
                             <div>Phong/Ban [0/30]</div>
                             <div>B.1</div>
@@ -36,7 +60,7 @@ class Menu extends React.Component {
                             <div>Thuc Don</div>
                             <div>Tat ca</div>
                         </Button>
-                    </Col>
+                    </Col> */}
                 </Row>
                 <Row className={"pt-3"}>
                     <ListGroup className={"w-100"}>
@@ -47,8 +71,8 @@ class Menu extends React.Component {
                                         <ListGroupItemHeading className={"mt-2"}>
                                             {type.type}
                                         </ListGroupItemHeading>
-                                        {
-                                            this.props.products.filter(product => product.type.type == type.type).map((product) => {
+                                        { this.state.products === null ? null :
+                                            this.state.products.filter(product => product.type.type == type.type).map((product) => {
                                                 // console.log(product);
                                                 
                                             return (
@@ -73,7 +97,7 @@ class Menu extends React.Component {
                                                         style={this.props.inStockButton === true ? null : { 'display': 'none' }} 
                                                         color={product.inStock ? "danger" : 'success'} 
                                                         size="sm"
-                                                        onClick={() => this.props.checkInStock(product['_id'], product.inStock)}
+                                                        onClick={() => this.checkInStock(product['_id'], product.inStock)}
                                                     >
                                                         {product.inStock ? 'Báo hết hàng' : 'Báo còn hàng'}
                                                     </Button>

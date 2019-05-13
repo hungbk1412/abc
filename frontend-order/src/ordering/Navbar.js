@@ -24,7 +24,7 @@ export default class NavigationBar extends React.Component {
           <Row className={"w-100 h-100"}>
             <Col xs={7} className={"h-100 d-flex"}>
               <ButtonGroup id={"Navbar-buttonGroup-2"} className={""}>
-                <NavItem className={"NavItem d-flex align-items-center"}>
+                {/* <NavItem className={"NavItem d-flex align-items-center"}>
                   <Button
                     color={"primary"}
                     className={"Navbar-button rounded-circle"}
@@ -63,12 +63,12 @@ export default class NavigationBar extends React.Component {
                   >
                     K
                   </Button>
-                </NavItem>
+                </NavItem> */}
               </ButtonGroup>
             </Col>
             <Col xs={5} className={"h-100 d-flex"}>
               <NavItem className={"NavItem d-flex align-items-center w-100"}>
-                  <InputGroup>
+                  {/* <InputGroup>
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className={"fa fa-search"} />
@@ -80,10 +80,10 @@ export default class NavigationBar extends React.Component {
                       id={"searchBar"}
                       className={"p-0"}
                     />
-                  </InputGroup>
+                  </InputGroup> */}
               </NavItem>
               <ButtonGroup id={"Navbar-buttonGroup-1"} className={"ml-auto"}>
-                <NavItem className={"NavItem d-flex align-items-center"}>
+                {/* <NavItem className={"NavItem d-flex align-items-center"}>
                   <Button color={"primary"} className={"Navbar-button rounded"}>
                     A
                   </Button>
@@ -111,15 +111,16 @@ export default class NavigationBar extends React.Component {
                   >
                     D
                   </Button>
-                </NavItem>
+                </NavItem> */}
                 <NavItem className={"NavItem d-flex align-items-center"}>
                   <Button
-                    color={"primary"}
-                    className={"Navbar-button rounded-circle"}
+                    onClick={this.props.logout}
+                    color={'danger'}
+                    style={this.props.logoutBtn === true ? null : { 'display': 'none' }}
                   >
-                    E
+                    Logout
                   </Button>
-                </NavItem>
+                </NavItem> 
               </ButtonGroup>
             </Col>
           </Row>

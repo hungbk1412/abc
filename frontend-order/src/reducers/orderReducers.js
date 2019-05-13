@@ -2,6 +2,10 @@
 export default function orderReducer(state = {
     productType: [],
     products: {},
+    tempOrders: {
+        orders: [],
+        totalPrice: 0
+    },
     bill: {
         items: [],
         totalPrice: 0,
@@ -13,6 +17,7 @@ export default function orderReducer(state = {
 }, action) {
     let productType = state.productType;
     let products = state.products;
+    let tempOrders = state.tempOrders;
     let bill = state.bill;
     let temp_vat = 0;
     let temp_discount = 0;
@@ -86,20 +91,31 @@ export default function orderReducer(state = {
             });
             break;
         }
+        case 'GET_TEMP_ORDERS': {
+            tempOrders.orders = action.payload;            
+            // console.log('tempOrders.orders', tempOrders.orders);
+            break;
+        }
+        case 'NEW_TEMP_ORDER': { 
+            // console.log('action.payload :', action.payload);
+            tempOrders.orders.push(action.payload);           
+            bill.items = [];
+            bill.totalPrice = 0;
+            break;
+        }
         case "BILL_CREATED": {
-            bill.items = []
+            tempOrders.orders = [];
+            tempOrders.totalPrice = 0;
+            bill.items = [];
             bill.totalPrice = 0;
             break;
         }
         case 'CHECK_INSTOCK': {
             let productLength = products.length;
-            console.log('action.payload[id]', action.payload.data);
             for (let i = 0; i < productLength; i++) {
-                if (products[i]['_id'] === action.payload.data['_id']) {
-                    console.log('products hihi', products[i]);
-                    products[i]['inStock'] = action.payload.data['inStock'];
-                    console.log('products hihi', products[i]);
-                    // break;
+                if (products[i]['_id'] === action.payload['_id']) {
+                    products[i]['inStock'] = action.payload['inStock'];
+                    break;
                 }
             }
             break;
@@ -113,8 +129,10 @@ export default function orderReducer(state = {
         total = total + elem.price * elem.quantity;
         return total;
     }, 0);
-    
-    bill.totalPrice = temp_cost + temp_cost * temp_vat - temp_discount * temp_cost * 0.01;
+    let tempTotalPrice = tempOrders.orders.reduce(function(total, order) {
+        return total = total + order.totalPrice;
+    }, 0);
+    bill.totalPrice = temp_cost + tempTotalPrice + temp_cost * temp_vat - temp_discount * temp_cost * 0.01;
     return {
         ...state,
         productType: productType,
@@ -123,5 +141,6 @@ export default function orderReducer(state = {
         cost: temp_cost,
         vat: temp_vat,
         discount: temp_discount,
+        tempOrders: tempOrders
     };
 }

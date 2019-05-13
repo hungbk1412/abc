@@ -5,7 +5,6 @@ const billSchema = new Schema (
     {
         items: [
             {
-                id: Number,
                 _id: false,
                 productId: {type: Schema.Types.ObjectId, ref: "Product"},
                 name: {type: String},
@@ -16,7 +15,7 @@ const billSchema = new Schema (
         ],
         date: String,
         totalPrice: {type: Number},
-        user: {type: Schema.Types.ObjectId, ref: "user"}
+        username: String
     },
     {
         timestamps: true

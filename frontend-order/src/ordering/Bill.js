@@ -1,16 +1,25 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Table, Button } from "reactstrap";
+import openSocket from 'socket.io-client';
 import {
   removeDrink,
   increaseQuantity,
-  decreaseQuantity
+  decreaseQuantity,
+  getTempOrders
 } from "actions/orderActions";
 import "ordering/Bill.css";
 
 class Bill extends React.Component {
-  constructor(props) {
-    super(props);
+
+  componentDidMount() {
+    this.props.getTempOrders(this.props.username);
+    const socket = openSocket('http://localhost:5000')
+    socket.on('order', data => {
+      if (data.action === 'checkItemDone') {
+          this.props.getTempOrders(this.props.username)
+      }
+  }) 
   }
 
   render() {
@@ -19,12 +28,12 @@ class Bill extends React.Component {
         <Table>
           <thead>
             <tr>
-              <th>Ten</th>
+              <th>Tên</th>
               <th className={"text-center"}>SL</th>
-              <th className={"text-center"}>Don Gia</th>
-              <th className={"text-center"}>Thanh Tien</th>
+              <th className={"text-center"}>Đơn giá</th>
+              <th className={"text-center"}>Thành tiền</th>
             </tr>
-          </thead>
+          </thead>            
           <tbody>
             {this.props.bill.map(product => {
               return (
@@ -32,7 +41,7 @@ class Bill extends React.Component {
                   <td>
                     <div>{product["name"]}</div>
                     <div className={"font-italic font-weight-light"}>
-                      Ghi chu:
+                      Ghi chú:
                       {(function() {
                         if (product["note"] == null) {
                           return " " + "None";
@@ -73,6 +82,31 @@ class Bill extends React.Component {
               );
             })}
           </tbody>
+          { this.props.tempOrders.map(order => {
+              return (
+                order.items.map(product => 
+                  <tbody>
+                    <tr key={product["_id"]}>
+                      <td>
+                        <div>{product["name"]}</div>
+                      </td>
+                      <td>
+                        <div>{product["quantity"]}</div>
+                      </td>
+                      <td>
+                        <div>{product['price']}</div>
+                      </td>
+                      <td>
+                        <div>{product['total']}</div>
+                      </td>
+                      <td>
+                        <div>{product['served'] ? 'Đã phục vụ' : null}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                )
+              )              
+            })}          
         </Table>
       </div>
     );
@@ -81,11 +115,16 @@ class Bill extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    bill: state.order.bill.items
+    bill: state.order.bill.items,
+    tempOrders: state.order.tempOrders.orders,
+    username: state.auth.username
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
+    getTempOrders: (username) => {
+      dispatch(getTempOrders(username));
+    },
     remove: product => {
       dispatch(removeDrink(product));
     },

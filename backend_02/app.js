@@ -3,13 +3,14 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const cors = require('cors');
+// const cors = require('cors');
 
 const MONGODB_URI = 'mongodb://localhost:27017/coffee'
 const app = express();
 
 const authRoute = require('./routes/auth');
 const orderRoute = require('./routes/order');
+const managerRoute = require('./routes/manager');
 
 const store = new MongoDBStore({
   uri: MONGODB_URI,
@@ -52,12 +53,12 @@ app.use(session({
 
 app.use('/api/auth', authRoute);
 app.use('/api/order', orderRoute);
+app.use('/api/manager', managerRoute);
 
-app.use((error, req, res, next) => {
-    const status = error.statusCode || 500;
-    const message = error.message;
-    const data = error.data;
-    res.status(status).json({ message: message, data: data });
-});
-
-mongoose.connect(MONGODB_URI).then(result => {app.listen(5000);}).catch(err => console.log(err));
+mongoose.connect(MONGODB_URI).then(result => {
+  const server = app.listen(5000);
+    const io = require('./socket').init(server);
+    io.on('connection', socket => {
+      console.log('Client connected');
+    });
+}).catch(err => console.log(err));

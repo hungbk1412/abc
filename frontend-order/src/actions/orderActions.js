@@ -58,6 +58,31 @@ export function getProductTypes(){
   }
 }
 
+export function getTempOrders(username) {
+  return function (dispatch) { 
+    axios.post('/api/order/get-temp-order', {username: username}).then(res => {
+      // console.log('res get temp orders', res.data);
+      dispatch({
+        type: 'GET_TEMP_ORDERS',
+        payload: res.data
+      })
+    })
+  }
+}
+
+export function createTempOrder(bill, username){
+  return function(dispatch){
+    // console.log('bill', bill)
+    // console.log('username', username);
+    axios.post('/api/order/new-temp-order', {...bill, username}).then(res=> {
+      dispatch({
+        type: 'NEW_TEMP_ORDER',
+        payload: res.data
+      })
+    })
+  }
+}
+
 export function createBill(bill){
   return function(dispatch){
     axios.post("/api/order/create-bill", bill).then(res=>{
@@ -73,7 +98,7 @@ export function checkInStock(product) {
     axios.post('/api/order/update-status-instock', product).then(res => {
       dispatch({
         type: 'CHECK_INSTOCK',
-        payload: res
+        payload: res.data
       })
     })
   }

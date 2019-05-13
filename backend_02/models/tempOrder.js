@@ -5,7 +5,6 @@ const tempOrderSchema = new Schema(
     {
         items: [
             {
-                id: Number,
                 _id: false,
                 productId: {type: Schema.Types.ObjectId, ref: "Product", required: true},
                 name: {type: String},
@@ -13,11 +12,12 @@ const tempOrderSchema = new Schema(
                 quantity: {type: Number, required: true},
                 note: {type: String},
                 total: {type: Number},
-                served: {type: Boolean}
+                served: {type: Boolean, default: false}
             }
         ],
+        done: {type: Boolean, default: false},
         totalPrice: {type: Number},
-        table: {type: Schema.Types.ObjectId, ref: "user"}
+        username: String
     },
     {
         timestamps: true

@@ -1,6 +1,46 @@
 const Bill = require('../models/bill');
 const Expense = require('../models/expense');
+const User = require('../models/user')
+const Product = require('../models/product');
+const ProductType = require('../models/productType');
 var moment = require('moment-timezone');
+
+exports.postNewUser = (req, res, next) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    User.findOne({username: username}).then(userDoc => {
+        if (userDoc) {
+            return res.status(400).json({message: 'Username is already picked'})
+        }
+        return bcrypt.hash(password, 12).then(hashedPass => {
+            const user = new User({...req.body, password: hashedPass})
+            return user.save()
+        }).then(result => {
+            res.status(201).json({message: 'User Created!', userRole: result.role_id})
+        })
+    }).catch(err => {
+        err.statusCode = 500; 
+        next(err);       
+    })
+}
+
+exports.postProductType = (req, res, next) => {
+    const productType = new ProductType(req.body);
+    productType.save().then((productType) => {
+        res.status(201).json({message: 'New product type created!', productType: productType})
+    }).catch(err => {
+        res.status(500).json({message: 'Error when add new product type'});
+    })
+}
+
+exports.postProduct = (req, res, next) => {
+    const product = new Product(req.body);
+    product.save().then((product) => {
+        res.status(201).json({message: 'New product created!', product: product})
+    }).catch(err => {
+        res.status(500).json({message: 'Error when add new product'});
+    })
+}
 
 exports.getAllBills = (req, res, next) => {
     Bill.find().then(bills => {

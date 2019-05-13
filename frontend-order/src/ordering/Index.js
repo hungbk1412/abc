@@ -4,6 +4,7 @@ import Content from 'ordering/Content';
 import Login from '../login/Login'
 import { connect } from 'react-redux';
 import Kitchen from '../kitchen/Kitchen';
+import {logout} from '../actions/loginAction'
 class Index extends React.Component {
     render() {
         // console.log('this.props.username', this.props.username)
@@ -11,12 +12,13 @@ class Index extends React.Component {
         let mainScreen = <Content/>
         if (!this.props.username || !this.props.roleId) {
             mainScreen = <Login />
+        } else if (this.props.roleId === 2) {
+            mainScreen = <Kitchen />
         }
         return (
             <div>
-                <NavigationBar/>
-                {/* {mainScreen} */}
-                <Kitchen />
+                <NavigationBar logout={this.props.logout} logoutBtn={ this.props.roleId ? true : false } />
+                {mainScreen}
             </div>
         );
     }
@@ -31,7 +33,9 @@ const mapStateToProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
     return {
-
+        logout: () => {
+            dispatch(logout());
+        }
     }
 }
 

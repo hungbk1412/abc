@@ -1,6 +1,6 @@
 exports.isLoggedIn = (req, res, next) => {
     if (!req.session || !req.session.user || !req.session.user.isActive) {
-        console.log('session', req.session);        
+        // console.log('session', req.session);        
         return;
     }
     next();

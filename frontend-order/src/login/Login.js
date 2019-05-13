@@ -23,7 +23,7 @@ class Login extends Component {
     this.setState({ password: event.target.value})
   }
 
-  onLogin = () => { 
+  onLogin = async () => { 
     swal("Login...", {
       closeOnClickOutside: false,
       closeOnEsc: false,
@@ -32,7 +32,11 @@ class Login extends Component {
     axios.post('/api/auth/login', this.state).then(res => {
       swal.close();
       this.props.login(res);
+      console.log('res', res)
     }).catch(err => {
+      if (err.response.status == 401) {
+        swal("Wrong username or pass", "Please try again", "error");
+      }
       swal("Fail to connect to the server", "Please try again", "error");
     })
   }
