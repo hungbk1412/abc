@@ -53,7 +53,9 @@ class Kitchen extends Component {
                                             return (
                                                 <>
                                                     <Row style={{'padding': '10px', 'border': '1px solid black'}}>
-                                                        <Col xs='7'>{item.name}</Col>
+                                                        <Col xs='7'>
+                                                            <div>{item.name}</div>                                                            
+                                                        </Col>
                                                         <Col xs='2'>{item.quantity}</Col>
                                                         <Col xs='3'>
                                                             <Button 
@@ -64,9 +66,10 @@ class Kitchen extends Component {
                                                             >
                                                                 Done
                                                             </Button>
-                                                        </Col>   
+                                                        </Col>
+                                                        <div style={{'fontSize': '14px'}}>Note: {item.note}</div>   
                                                     </Row>
-                                                    <div>{item.note}</div>
+                                                    
                                                 </>
                                             )
                                         })}

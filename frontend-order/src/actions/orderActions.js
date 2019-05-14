@@ -13,6 +13,13 @@ export function increaseQuantity(drink) {
   };
 }
 
+export function takeNote(note, drink) {
+  return {
+    type: "NOTE",
+    payload: {note: note, item: drink}
+  };
+}
+
 export function decreaseQuantity(drink) {
   return {
     type: "DECREASE_QUANTITY",

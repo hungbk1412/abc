@@ -48,6 +48,14 @@ export default function orderReducer(state = {
             bill.items[found].quantity--;
             break;
         }
+        case "NOTE" : {
+            let found = state.bill.items.findIndex((elem) => {
+                return elem["name"] == action.payload.item["name"];
+            });
+            bill.items = state.bill.items.slice();
+            bill.items[found].note = action.payload.note;
+            break;
+        }
         case "CHANGE_VAT": {
             if (action.payload == 0.1) {
                 temp_vat = 0.1;
@@ -79,7 +87,7 @@ export default function orderReducer(state = {
                 bill.items[found].quantity++;
             }
             break;
-        }
+        }        
         case "GET_PRODUCTS": {
             products = action.payload;
             break;

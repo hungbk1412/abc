@@ -6,7 +6,8 @@ import {
   removeDrink,
   increaseQuantity,
   decreaseQuantity,
-  getTempOrders
+  getTempOrders,
+  takeNote
 } from "actions/orderActions";
 import "ordering/Bill.css";
 
@@ -20,6 +21,10 @@ class Bill extends React.Component {
           this.props.getTempOrders(this.props.username)
       }
   }) 
+  }
+
+  takeNote = (product, e) => {
+    this.props.takeNote(e.target.value, product);
   }
 
   render() {
@@ -42,13 +47,7 @@ class Bill extends React.Component {
                     <div>{product["name"]}</div>
                     <div className={"font-italic font-weight-light"}>
                       Ghi chú:
-                      {(function() {
-                        if (product["note"] == null) {
-                          return " " + "None";
-                        } else {
-                          return " " + product["note"];
-                        }
-                      })()}
+                      <input type='text' name='note' onBlur={this.takeNote.bind(this, product)} />
                     </div>
                   </td>
                   <td className={"text-center"}>
@@ -133,6 +132,9 @@ const mapDispatchToProps = dispatch => {
     },
     dec: product => {
       dispatch(decreaseQuantity(product));
+    },
+    takeNote: (note, product) => {
+      dispatch(takeNote(note, product));
     }
   };
 };

@@ -84,17 +84,17 @@ class Utilities extends React.Component {
                             <i className={"fa fa-times"}/> Khách lẻ
                         </Button> */}
                     </Col>
-                    <Col xs={5} className={"ml-auto d-flex align-items-center"}>
+                    <Col style={{'fontSize': '30px', 'padding': '20px'}} xs={5} className={"ml-auto d-flex align-items-center"}>
 
-                        <div className={"mr-auto"}>Tổng thành tiền</div>
+                        <div  className={"mr-auto"}>Tổng thành tiền</div>
                         <div className={"ml-auto"}>{this.props.cost}</div>
 
                     </Col>
                 </Row>
-                <Row className={"mb-1"}>
-                    {/* <Col xs={5}>
+                {/* <Row className={"mb-1"}>
+                    <Col xs={5}>
                         <Input type={"number"}/>
-                    </Col> */}
+                    </Col>
                     <Col xs={5} className={"ml-auto d-flex"}>
                         <div className={"mr-auto p-0"} xs={6}>Chiết khấu</div>
                         <div className={"ml-auto p-0"} xs={6}>
@@ -106,7 +106,7 @@ class Utilities extends React.Component {
                 <Row className={"mb-1"}>
                     <Col xs={5} className={"d-flex"}>
                         <Col xs={6} className={"pr-1 pl-0"}>
-                            {/* <Dropdown isOpen={this.state.isLeftToggled} toggle={this.handleLeftToggle}>
+                            <Dropdown isOpen={this.state.isLeftToggled} toggle={this.handleLeftToggle}>
                                 <DropdownToggle caret className={"w-100 bg-white text-dark border-info"}>
                                     SomeThing
                                 </DropdownToggle>
@@ -117,10 +117,10 @@ class Utilities extends React.Component {
                                     <DropdownItem>Item 4</DropdownItem>
                                     <DropdownItem>Item 5</DropdownItem>
                                 </DropdownMenu>
-                            </Dropdown> */}
+                            </Dropdown>
                         </Col>
                         <Col xs={6} className={"pr-0 pl-1"}>
-                            {/* <Dropdown isOpen={this.state.isRightToggled} toggle={this.handleRightToggle}>
+                            <Dropdown isOpen={this.state.isRightToggled} toggle={this.handleRightToggle}>
                                 <DropdownToggle caret className={"w-100 bg-white text-dark border-info"}>
                                     SomeThing
                                 </DropdownToggle>
@@ -131,7 +131,7 @@ class Utilities extends React.Component {
                                     <DropdownItem>Item 4</DropdownItem>
                                     <DropdownItem>Item 5</DropdownItem>
                                 </DropdownMenu>
-                            </Dropdown> */}
+                            </Dropdown>
                         </Col>
                     </Col>
                     <Col xs={5} className={"d-flex ml-auto"}>
@@ -145,7 +145,7 @@ class Utilities extends React.Component {
                 </Row>
                 <Row className={"mb-1"}>
                     <Col xs={5}>
-                        {/* <Input type={"text"} placeholder={"Tu dong tao ma"} className={"mb-1"}/> */}
+                        <Input type={"text"} placeholder={"Tu dong tao ma"} className={"mb-1"}/>
                     </Col>
                     <Col xs={5} className={"ml-auto d-flex"}>
                         <p>Tổng cộng</p>
@@ -154,13 +154,13 @@ class Utilities extends React.Component {
                 </Row>
                 <Row className={"mb-1"}>
                     <Col xs={5}>
-                        {/* <Input type={"textarea"} className={"mb-1"}/> */}
+                        <Input type={"textarea"} className={"mb-1"}/>
                     </Col>
                     <Col xs={5} className={"ml-auto"}>
                         <p>Tiền khách trả</p>
                         <p>Tiền thừa</p>
                     </Col>
-                </Row>
+                </Row> */}
                 <Row>
                     <Col xs={4} className={"pr-1"}>
                         <Button color={"primary"} className={"d-block"} block>Chuyển bàn</Button>
@@ -172,6 +172,7 @@ class Utilities extends React.Component {
                     </Col>
                     <Col xs={4} className={"pl-1"}>
                         <Button color={"danger"} className={"h-100"} block
+                                disabled={this.props.tempOrders}
                                 onClick={()=>this.createBill(this.props.tempOrders)}>Thanh Toán</Button>
                     </Col>
                 </Row>
