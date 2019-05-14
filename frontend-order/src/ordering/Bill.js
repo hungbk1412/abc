@@ -10,12 +10,13 @@ import {
   takeNote
 } from "actions/orderActions";
 import "ordering/Bill.css";
+import {storeApi} from '../constant';
 
 class Bill extends React.Component {
 
   componentDidMount() {
     this.props.getTempOrders(this.props.username);
-    const socket = openSocket('http://localhost:5000')
+    const socket = openSocket(storeApi);
     socket.on('order', data => {
       if (data.action === 'checkItemDone') {
           this.props.getTempOrders(this.props.username)

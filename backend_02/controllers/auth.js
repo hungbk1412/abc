@@ -1,12 +1,12 @@
 const User = require('../models/user');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 exports.isLoggedIn = (req, res, next) => {
     res.status(201).json({message: 'Logged in!', username: req.session.user.username, userRole: req.session.user.role_id});
 }
 
 exports.postLogin = (req, res, next) => {
-    console.log('req.body when login', req.body)
+    // console.log('req.body when login', req.body)
     const username = req.body.username;
     const password = req.body.password;
     User.findOne({username: username}).then(user => {

@@ -4,7 +4,9 @@ import Content from 'ordering/Content';
 import Login from '../login/Login'
 import { connect } from 'react-redux';
 import Kitchen from '../kitchen/Kitchen';
-import {logout} from '../actions/loginAction'
+import {logout} from '../actions/loginAction';
+import Checkout from './Checkout';
+
 class Index extends React.Component {
     render() {
         // console.log('this.props.username', this.props.username)
@@ -14,6 +16,8 @@ class Index extends React.Component {
             mainScreen = <Login />
         } else if (this.props.roleId === 2) {
             mainScreen = <Kitchen />
+        } else if (this.props.roleId === 3) {
+            mainScreen = <Checkout />
         }
         return (
             <div>

@@ -1,0 +1,1 @@
+export const storeApi = 'http://localhost:5000';

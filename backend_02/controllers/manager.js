@@ -3,7 +3,7 @@ const Expense = require('../models/expense');
 const User = require('../models/user')
 const Product = require('../models/product');
 const ProductType = require('../models/productType');
-var moment = require('moment-timezone');
+const moment = require('moment-timezone');
 
 exports.postNewUser = (req, res, next) => {
     const username = req.body.username;
@@ -71,8 +71,8 @@ exports.getBillsByMonth = (req, res, next) => {
 
 exports.postExpense = (req, res, next) => {
     const expense = new Expense(req.body);
-    expense.date = moment(req.params).tz('Asia/Bangkok').format('YYYY-MM-DD');
-    expense.month = moment(req.params).tz('Asia/Bangkok').format('YYYY-MM');
+    expense.date = moment(req.body.date).tz('Asia/Bangkok').format('YYYY-MM-DD');
+    expense.month = moment(req.body.date).tz('Asia/Bangkok').format('YYYY-MM');
     expense.save().catch(err => {
         console.log('Err when post new expense');
     }).then(result => {

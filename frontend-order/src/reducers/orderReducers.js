@@ -10,17 +10,21 @@ export default function orderReducer(state = {
         items: [],
         totalPrice: 0,
     },
+    finalBills : [],
     cost: 0,
-    vat: 0,
-    discount: 0,
+    // vat: 0,
+    // discount: 0,
     total: 0,
+    needToReRender: 0,
 }, action) {
     let productType = state.productType;
     let products = state.products;
     let tempOrders = state.tempOrders;
     let bill = state.bill;
-    let temp_vat = 0;
-    let temp_discount = 0;
+    let finalBills = state.finalBills;
+    let needToReRender = state.needToReRender;
+    // let temp_vat = 0;
+    // let temp_discount = 0;    
 
     switch (action.type) {
         case "REMOVE_DRINK":
@@ -54,19 +58,6 @@ export default function orderReducer(state = {
             });
             bill.items = state.bill.items.slice();
             bill.items[found].note = action.payload.note;
-            break;
-        }
-        case "CHANGE_VAT": {
-            if (action.payload == 0.1) {
-                temp_vat = 0.1;
-            }
-            if (action.payload == 0) {
-                temp_vat = 0;
-            }
-            break;
-        }
-        case "CHANGE_DISCOUNT": {
-            temp_discount = action.payload;
             break;
         }
         case "ADD_PRODUCT": {
@@ -116,6 +107,8 @@ export default function orderReducer(state = {
             tempOrders.totalPrice = 0;
             bill.items = [];
             bill.totalPrice = 0;
+            // console.log('finalBills :', finalBills);
+            needToReRender++
             break;
         }
         case 'CHECK_INSTOCK': {
@@ -137,18 +130,24 @@ export default function orderReducer(state = {
         total = total + elem.price * elem.quantity;
         return total;
     }, 0);
-    let tempTotalPrice = tempOrders.orders.reduce(function(total, order) {
-        return total = total + order.totalPrice;
-    }, 0);
-    bill.totalPrice = temp_cost + tempTotalPrice + temp_cost * temp_vat - temp_discount * temp_cost * 0.01;
+
+    tempOrders.orders.forEach(order => {
+        order.items.forEach(item => {
+            temp_cost = temp_cost + item.total
+        })
+    })
+    
+    bill.totalPrice = temp_cost
     return {
         ...state,
         productType: productType,
         products: products,
         bill: bill,
+        finalBills: finalBills,
+        needToReRender: needToReRender,
         cost: temp_cost,
-        vat: temp_vat,
-        discount: temp_discount,
+        // vat: temp_vat,
+        // discount: temp_discount,
         tempOrders: tempOrders
     };
 }

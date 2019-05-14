@@ -1,5 +1,6 @@
 /* eslint-disable default-case */
 export default function orderReducer(state = {
+    store: 'First store',
     username: null,
     roleId: null
 }, action) {

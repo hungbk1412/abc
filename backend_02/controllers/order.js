@@ -2,7 +2,8 @@ const Product = require("../models/product");
 const ProductType = require("../models/productType");
 const TempOrder = require('../models/tempOrder');
 const Bill = require('../models/bill');
-var moment = require('moment-timezone');
+const moment = require('moment-timezone');
+const FinalBill = require('../models/finalBill');
 const io = require('../socket');
 
 exports.getProducts = (req, res, next) => {
@@ -47,13 +48,13 @@ exports.postNewTempOrder = (req, res, next) => {
         res.status(201).json(result)
     }) 
 }
-exports.editTempOrder = (req, res, next) => {
-    const tempOrderId = req.body.tempOrder['_id'];
-    const items = req.body.tempOrder.items;
-    TempOrder.update(
-        { _id: tempOrderId}, 
-        { $set: {items: items, done: false}})
-}
+// exports.editTempOrder = (req, res, next) => {
+//     const tempOrderId = req.body.tempOrder['_id'];
+//     const items = req.body.tempOrder.items;
+//     TempOrder.update(
+//         { _id: tempOrderId}, 
+//         { $set: {items: items, done: false}})
+// }
 // exports.switchTable = (req, res, next) => {
 //     const newTable = req.body.newTable;
 //     const tempOrderId = req.body.tempOrderId
@@ -91,22 +92,54 @@ exports.checkItemDone = (req, res, next) => {
         return res.status(201).json({order});
     })
 }
-exports.doneOrder = (req, res, next) => {
-    const tempOrderId = req.body.tempOrderId;
-    TempOrder.findByIdAndUpdate(tempOrderId, (err, order) => {
-        if (err) {
-            console.log('Err when check item done');
-            return res.status(500).json({message: 'Cant check order done'})
-        }
-    })
-}
+// exports.doneOrder = (req, res, next) => {
+//     const tempOrderId = req.body._id;
+//     TempOrder.findByIdAndUpdate(tempOrderId, (err, order) => {
+//         if (err) {
+//             console.log('Err when check item done');
+//             return res.status(500).json({message: 'Cant check order done'})
+//         }
+//     })
+// }
 
 exports.createBill = (req, res, next) => {
     const bill = new Bill(req.body);
     bill.date = moment(new Date()).tz('Asia/Bangkok').format('YYYY-MM-DD');
     bill.save().catch(err => {
         console.log('Err when create new bill');
+        return res.status(500).json({message: 'Cant create new bill'})
+    }).then(result => {
+        io.getIO().emit('order', {action: 'createBill'})
+        res.status(201).json(result);
+    })
+}
+
+exports.deleteTempOrder = (req, res, next) => {    
+    TempOrder.remove({_id: {$in: req.body}}).then().catch(err => {
+        console.log('Err when delete temp order');
+        return res.status(500).json({message: 'Cant delete temp order'})        
+    })
+}
+
+exports.cashierGetBills = (req, res, next) => {
+    Bill.find().then(bills => {
+        res.status(201).json(bills)
+    }).catch(err =>{
+        console.log('Err when get bills for cashier');        
+    })
+}
+
+exports.checkout = (req, res, next) => {
+    console.log('req.body :', req.body);
+    const finalBill = FinalBill(req.body);
+    finalBill.date = moment(new Date()).tz('Asia/Bangkok').format('YYYY-MM-DD');
+    Bill.findByIdAndDelete(req.body._id).then().catch(err => {
+        console.log('Err when delete bill');        
+    });
+    finalBill.save().catch(err => {
+        console.log('Err when create new bill');
+        return res.status(500).json({message: 'Cant create new bill'})
     }).then(result => {
         res.status(201).json(result)
-    })
+    })   
 }

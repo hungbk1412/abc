@@ -26,18 +26,7 @@ export function decreaseQuantity(drink) {
     payload: drink
   };
 }
-export function changeVAT(vat) {
-  return {
-    type: "CHANGE_VAT",
-    payload: vat
-  };
-}
-export function changeDiscount(event) {
-  return {
-    type: "CHANGE_DISCOUNT",
-    payload: event.target.value
-  };
-}
+
 export function addProduct(product) {
   return {
     type: "ADD_PRODUCT",
@@ -90,11 +79,13 @@ export function createTempOrder(bill, username){
   }
 }
 
+
 export function createBill(bill){
   return function(dispatch){
     axios.post("/api/order/create-bill", bill).then(res=>{
       dispatch({
         type: "BILL_CREATED",
+        payload: bill
       });
     })
   }

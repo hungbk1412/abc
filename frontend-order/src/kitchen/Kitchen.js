@@ -6,12 +6,13 @@ import { Container, Col, Row, Card, CardBody, CardHeader, CardFooter, Button } f
 import Menu from '../ordering/Menu';
 import {kitchenGetTempOrder, checkItemDone} from '../actions/kitchenActions';
 import './Kitchen.css';
+import {storeApi} from '../constant';
 
 class Kitchen extends Component {
 
     componentDidMount() {     
         this.props.kitchenGetTempOrder();
-        const socket = openSocket('http://localhost:5000')
+        const socket = openSocket(storeApi)
         socket.on('order', data => {
             if (data.action === 'newTempOrder') {
                 this.props.kitchenGetTempOrder()
@@ -90,7 +91,6 @@ class Kitchen extends Component {
 
 const mapStateToProps = function (state) {
     return {
-        roleId: state.auth.roleId,
         tempOrders: state.kitchen.tempOrders,
         needToReRender: state.kitchen.needToReRender
     };

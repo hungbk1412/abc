@@ -12,6 +12,7 @@ import {
 } from 'reactstrap';
 import {connect} from 'react-redux';
 import {changeVAT, changeDiscount, createBill, createTempOrder} from 'actions/orderActions';
+import axios from '../axios-store';
 
 
 class Utilities extends React.Component {
@@ -50,7 +51,9 @@ class Utilities extends React.Component {
     createBill = (orders) => {
         let bill = orders[0];
         delete bill['done'];
+        let ordersToDelete = []
         for (let i = 0; i < orders.length; i++) {
+            ordersToDelete.push(orders[i]._id);
             for (let j = 0; j < orders[i].items.length; j++) {
                 delete orders[i].items[j]['served'];
                 if (i > 0) {
@@ -66,7 +69,15 @@ class Utilities extends React.Component {
                 }
             }
         }
-        this.props.createBill(bill)
+        let temp_cost = bill.items.reduce(function (total, elem) {
+            total = total + elem.price * elem.quantity;
+            return total;
+        }, 0);
+        bill.totalPrice = temp_cost;
+        axios.post('/api/order/delete-temp-order', ordersToDelete).then(this.props.createBill(bill)).catch(err =>{
+            console.log('err :', err);
+        })
+        
     }
 
     render() {
@@ -162,17 +173,15 @@ class Utilities extends React.Component {
                     </Col>
                 </Row> */}
                 <Row>
-                    <Col xs={4} className={"pr-1"}>
+                    {/* <Col xs={4} className={"pr-1"}>
                         <Button color={"primary"} className={"d-block"} block>Chuyển bàn</Button>
-                        {/* <Button color={"primary"} className={"d-block"} block>Tách bàn</Button> */}
-                    </Col>
-                    <Col xs={4} className={"pl-1 pr-1"}>
+                    </Col> */}
+                    <Col  className={"pl-1 pr-1"}>
                         <Button onClick={()=>this.props.createTempOrder(this.props.bill, this.props.username)} color={"primary"} className={"d-block"} block>Báo chế biến</Button>
-                        {/* <Button color={"warning"} className={"d-block"} block>Tạm tính</Button> */}
                     </Col>
-                    <Col xs={4} className={"pl-1"}>
+                    <Col  className={"pl-1"}>
                         <Button color={"danger"} className={"h-100"} block
-                                disabled={this.props.tempOrders}
+                                disabled={this.props.tempOrders.length === 0}
                                 onClick={()=>this.createBill(this.props.tempOrders)}>Thanh Toán</Button>
                     </Col>
                 </Row>
@@ -188,18 +197,12 @@ const mapStateToProps = (state) => {
         bill: state.order.bill,
         cost: state.order.cost,
         total: state.order.bill.totalPrice,
-        VAT: state.order.vat,
-        discount: state.order.discount,
+        // VAT: state.order.vat,
+        // discount: state.order.discount,
     }
 };
 const mapDispatchToProps = (dispatch) => {
-    return {
-        changeVAT: (vat) => {
-            dispatch(changeVAT(vat))
-        },
-        changeDiscount: (event) => {
-            dispatch(changeDiscount(event))
-        },
+    return {        
         createBill: (bill) => {
             dispatch(createBill(bill))
         },
