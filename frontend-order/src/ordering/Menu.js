@@ -11,6 +11,7 @@ import {
 import openSocket from 'socket.io-client';
 import {connect} from "react-redux";
 import {addProduct, getProducts, getProductTypes, checkInStock} from "../actions/orderActions";
+import {storeApi} from '../constant'
 
 class Menu extends React.Component {
     state = {products: null}
@@ -18,7 +19,7 @@ class Menu extends React.Component {
     componentDidMount() {
         this.props.getProductTypes();
         this.props.getProducts();
-        const socket = openSocket('http://localhost:5000');
+        const socket = openSocket(storeApi);
         socket.on('order', data => {
             if (data.action === 'checkInStock') {
                 this.props.getProducts();

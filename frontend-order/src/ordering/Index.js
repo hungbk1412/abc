@@ -22,7 +22,8 @@ class Index extends React.Component {
         return (
             <div>
                 <NavigationBar logout={this.props.logout} logoutBtn={ this.props.roleId ? true : false } />
-                {mainScreen}
+                {/* {mainScreen} */}
+                <Checkout />
             </div>
         );
     }

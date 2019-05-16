@@ -6,7 +6,8 @@ const expenseSchema = new Schema(
         cost: Number,
         type: String,
         date: String,
-        month: String
+        month: String,
+        description: String
     },
     {
         timestamps: true

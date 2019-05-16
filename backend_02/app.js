@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 // const cors = require('cors');
+const moment = require('moment');
 
 const MONGODB_URI = 'mongodb://localhost:27017/coffee'
 const app = express();
@@ -54,6 +55,12 @@ app.use(session({
 app.use('/api/auth', authRoute);
 app.use('/api/order', orderRoute);
 app.use('/api/manager', managerRoute);
+
+// var start = moment.utc('10:00', "HH:mm");
+// var end = moment.utc('16:00', "HH:mm");
+// var d = moment.duration(end.diff(start));
+// var s = moment.utc(+d).format('H:mm');
+// console.log('s: ', s)
 
 mongoose.connect(MONGODB_URI).then(result => {
   const server = app.listen(5000);

@@ -16,6 +16,175 @@ class CheckOut extends Component {
             }
         })
     }
+
+    printBill = (bill) => {
+        let myWindow  = window.open('', 'bill', 'height=600,width=800');
+        myWindow.document.write(`<head>
+        <meta charset="utf-8">
+        <title>A simple, clean, and responsive HTML invoice template</title>
+        
+        <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+        
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+        
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+        
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+        
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+        
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+        
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+        
+        .invoice-box table tr.item td{
+            border-bottom: 1px solid #eee;
+        }
+        
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+        
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+            
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+        
+        /** RTL **/
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+        
+        .rtl table {
+            text-align: right;
+        }
+        
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+        </style>
+    </head>
+    
+    <body>
+        <div class="invoice-box">
+            <table cellpadding="0" cellspacing="0">
+                <tr class="top">
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td class="title">
+                                    <img src="http://storage.googleapis.com/hust-edu.appspot.com/images/347519313-1553408625211-logo_hust.png" style="width:100%; max-width:50px;">
+                                </td>
+                                
+                                <td>
+                                    Created: ${new Date()}<br>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                
+                <tr class="information">
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td>
+                                    Cà phê Hưng NT<br>
+                                    Số 1 Đại Cồ Việt<br>
+                                    Hai Bà Trưng, Hà Nội
+                                </td>
+                                
+                                <td>
+                                    Khách lẻ<br>
+                                    ${bill.username}<br>
+                                    Thanh toán: Tiền mặt
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                        <br><br><br><br>
+                        <table style="text-align: center" cellpadding="0" cellspacing="0">
+                            <tr class="heading">
+                                <td>Đồ uống</td>
+                                <td style="text-align: center">Giá</td>
+                                <td>Số lượng</td>
+                                <td>Thành tiền  </td>
+                            </tr>`)
+                for (let i = 0; i < bill.items.length; i++) {
+                    myWindow.document.write(`             
+                        <tr class="item">
+                            <td>${bill.items[i].name}</td>
+                            <td>${bill.items[i].price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</td>
+                            <td>${bill.items[i].quantity}</td>
+                            <td>${bill.items[i].total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</td>
+                        </tr>`)
+                }
+                myWindow.document.write(`
+                                    <tr class="total">
+                                        <td>Giảm giá: ${bill.discount}%</td>
+                                        <td>VAT: ${bill.vat}%</td>
+                                        <td></td>                    
+                                        <td> Tổng: ${bill.totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </body>`)
+                this.props.checkout(bill);
+    }
     
     render() {
         return (
@@ -42,9 +211,9 @@ class CheckOut extends Component {
                                                 <td className={"text-center"}>
                                                     {product["quantity"]}
                                                 </td>
-                                                <td className={"text-center"}>{product["price"]}</td>
+                                                <td className={"text-center"}>{product["price"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</td>
                                                 <td className={"text-center"}>
-                                                    <span>{product["total"]}</span>                                                
+                                                    <span>{product["total"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span>                                                
                                                 </td>
                                             </tr>
                                         )
@@ -75,32 +244,6 @@ class CheckOut extends Component {
                                 <Row className={"mb-1"}>
                                     <Col xs={5} className={"d-flex"}>
                                         <Col xs={6} className={"pr-1 pl-0"}>
-                                            {/* <Dropdown isOpen={this.state.isLeftToggled} toggle={this.handleLeftToggle}>
-                                                <DropdownToggle caret className={"w-100 bg-white text-dark border-info"}>
-                                                    SomeThing
-                                </DropdownToggle>
-                                                <DropdownMenu>
-                                                    <DropdownItem header>Header</DropdownItem>
-                                                    <DropdownItem>Item 2</DropdownItem>
-                                                    <DropdownItem>Item 3</DropdownItem>
-                                                    <DropdownItem>Item 4</DropdownItem>
-                                                    <DropdownItem>Item 5</DropdownItem>
-                                                </DropdownMenu>
-                                            </Dropdown>
-                                        </Col>
-                                        <Col xs={6} className={"pr-0 pl-1"}>
-                                            <Dropdown isOpen={this.state.isRightToggled} toggle={this.handleRightToggle}>
-                                                <DropdownToggle caret className={"w-100 bg-white text-dark border-info"}>
-                                                    SomeThing
-                                </DropdownToggle>
-                                                <DropdownMenu>
-                                                    <DropdownItem header>Header</DropdownItem>
-                                                    <DropdownItem>Item 2</DropdownItem>
-                                                    <DropdownItem>Item 3</DropdownItem>
-                                                    <DropdownItem>Item 4</DropdownItem>
-                                                    <DropdownItem>Item 5</DropdownItem>
-                                                </DropdownMenu>
-                                            </Dropdown> */}
                                         </Col>
                                     </Col>
                                     <Col xs={5} className={"d-flex ml-auto"}>
@@ -114,11 +257,10 @@ class CheckOut extends Component {
                                 </Row>
                                 <Row className={"mb-1"}>
                                     <Col xs={5}>
-                                        {/* <Input type={"text"} placeholder={"Tu dong tao ma"} className={"mb-1"} /> */}
                                     </Col>
                                     <Col xs={5} className={"ml-auto d-flex"}>
                                         <p>Tổng cộng</p>
-                                        <div className={"ml-auto"}>{bill.totalPrice}</div>
+                                        <div className={"ml-auto"}>{bill.totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</div>
                                     </Col>
                                 </Row>
                                 <Row className={"mb-1"}>
@@ -132,12 +274,11 @@ class CheckOut extends Component {
                                 </Row>
                                 <Row>
                                     <Col xs={4}>
+                                    <Button onClick={()=>this.printBill(bill)} color={"primary"} className={"d-block"} block>In hóa đơn</Button>
                                     </Col>
-                                    <Col className={"pl-1"}>
-                                        <Button color={"danger"} className={"h-100"} block
-                                            onClick={() => this.props.checkout(bill)}>Thanh Toán</Button>
+                                    <Col xs ={4}>
+                                        <Button color={"danger"} className={"h-100"} block onClick={() => this.props.checkout(bill)}>Thanh Toán</Button>
                                     </Col>
-                                    <Col xs ={4}></Col>
                                 </Row>
                             </div>
                         </Container>

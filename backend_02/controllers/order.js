@@ -8,7 +8,8 @@ const io = require('../socket');
 
 exports.getProducts = (req, res, next) => {
     Product.find().populate('type').then(products => {
-        res.status(201).json(products)
+        res.status(200
+            ).json(products)
     }).catch(err => {
         err.statusCode = 500; 
         next(err);
@@ -16,7 +17,8 @@ exports.getProducts = (req, res, next) => {
 }
 exports.getProductType = (req, res, next) => {
     ProductType.find().then(productTypes => {
-        res.status(201).json(productTypes)
+        res.status(200
+            ).json(productTypes)
     }).catch(err => {
         err.statusCode = 500; 
         next(err);       
@@ -32,7 +34,8 @@ exports.postStatusInStock = (req, res, next) => {
             return res.status(500).json({message: 'Cant update in stock status'});
         }
         io.getIO().emit('order', {action: 'checkInStock'})
-        return res.status(201).json({'_id': product['_id'], 'inStock': inStock});
+        return res.status(200
+            ).json({'_id': product['_id'], 'inStock': inStock});
     })
 }
 
@@ -45,7 +48,8 @@ exports.postNewTempOrder = (req, res, next) => {
     }).then(result => {
         // console.log('result when post new temp order:', result);
         io.getIO().emit('order', {action: 'newTempOrder'})
-        res.status(201).json(result)
+        res.status(200
+            ).json(result)
     }) 
 }
 // exports.editTempOrder = (req, res, next) => {
@@ -65,7 +69,8 @@ exports.tableGetTempOrder = (req, res, next) => {
     const username = req.body.username;
     // console.log('username :', username);
     TempOrder.find({username: username}, null, {sort: {updatedAt: -1}}).then(result => {
-        res.status(201).json(result)
+        res.status(200
+            ).json(result)
     }).catch(err => {
         console.log('Err when get tem orders for table');
         
@@ -75,7 +80,8 @@ exports.tableGetTempOrder = (req, res, next) => {
 // Controller tu user nhan vien bep
 exports.barGetTempOrder = (req, res, next) => {
     TempOrder.find({done: false}, null, {sort: {updatedAt: -1}}).then(result => {
-        res.status(201).json(result)
+        res.status(200
+            ).json(result)
     }).catch(err => {
         console.log('Err when get temp orders for bar/kitchen');        
     }) 
@@ -89,7 +95,8 @@ exports.checkItemDone = (req, res, next) => {
             return res.status(500).json({message: 'Cant check item done'}); 
         }
         io.getIO().emit('order', {action: 'checkItemDone'})
-        return res.status(201).json({order});
+        return res.status(200
+            ).json({order});
     })
 }
 // exports.doneOrder = (req, res, next) => {
@@ -110,7 +117,8 @@ exports.createBill = (req, res, next) => {
         return res.status(500).json({message: 'Cant create new bill'})
     }).then(result => {
         io.getIO().emit('order', {action: 'createBill'})
-        res.status(201).json(result);
+        res.status(200
+            ).json(result);
     })
 }
 
@@ -123,7 +131,8 @@ exports.deleteTempOrder = (req, res, next) => {
 
 exports.cashierGetBills = (req, res, next) => {
     Bill.find().then(bills => {
-        res.status(201).json(bills)
+        res.status(200
+            ).json(bills)
     }).catch(err =>{
         console.log('Err when get bills for cashier');        
     })
@@ -140,6 +149,7 @@ exports.checkout = (req, res, next) => {
         console.log('Err when create new bill');
         return res.status(500).json({message: 'Cant create new bill'})
     }).then(result => {
-        res.status(201).json(result)
+        res.status(200
+            ).json(result)
     })   
 }
