@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 // const cors = require('cors');
-const moment = require('moment');
 
 const MONGODB_URI = 'mongodb://localhost:27017/coffee'
 const app = express();

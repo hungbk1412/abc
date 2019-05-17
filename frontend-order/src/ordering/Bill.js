@@ -94,10 +94,10 @@ class Bill extends React.Component {
                         <div>{product["quantity"]}</div>
                       </td>
                       <td>
-                        <div>{product['price']}</div>
+                        <div>{product['price'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</div>
                       </td>
                       <td>
-                        <div>{product['total']}</div>
+                        <div>{product['total'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</div>
                       </td>
                       <td>
                         <div>{product['served'] ? 'Đã phục vụ' : null}</div>
