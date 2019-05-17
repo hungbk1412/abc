@@ -9,7 +9,9 @@ const employeeSchema = new Schema(
         birthday: String,
         phone: String,
         isActive: {type: Boolean, default: true},
-        salaryRate: Number
+        salaryRate: Number,
+        role: String,
+        gender: String
     },
     {
         timestamps : true,

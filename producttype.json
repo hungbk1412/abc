@@ -1,2 +1,0 @@
-{"_id":{"$oid":"5cd391091e51ef377c653779"},"type":"Type 1","createdAt":{"$date":{"$numberLong":"1557369097723"}},"updatedAt":{"$date":{"$numberLong":"1557369097723"}},"__v":{"$numberInt":"0"}}
-{"_id":{"$oid":"5cd3910d1e51ef377c65377a"},"type":"Type 2","createdAt":{"$date":{"$numberLong":"1557369101922"}},"updatedAt":{"$date":{"$numberLong":"1557369101922"}},"__v":{"$numberInt":"0"}}

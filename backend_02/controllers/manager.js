@@ -30,13 +30,23 @@ exports.postNewUser = (req, res, next) => {
 exports.editUser = (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
-    User.findOne({username: username}).then(user => {
-        if (user) {
+    User.findOneAndUpdate({username: username}, {$set: {'username': username, 'role_id': req.body.role_id, 'isActive': req.body.isActive}}).then(user => {
+        if (user && password) {
             return bcrypt.hash(password, 12).then(hashedPass => {
                 user.password = hashedPass;
-                return user.save();
+                user.save();
+                res.status(200).json('Done')
             })
         }
+        res.status(200).json('Done')
+    }).catch(err => res.status(500).json('Loi roi'))
+}
+exports.getUsers = (req, res, next) => {
+    User.find().then(users => {
+        res.status(200).json(users);
+    }).catch(err => {
+        console.log('Err when get all bill');      
+        res.status(500).json({message: 'Err when get all bills'})
     })
 }
 
@@ -199,15 +209,29 @@ exports.getProductsSold = (req, res, next) => {
 exports.postEmployee = (req, res, next) => {
     const employee = new Employee(req.body);
     employee.save().then(
-        res.status(200)
+        res.status(200).json('done')
     ).catch(
         res.status(500)
     )
 }
 exports.editEmployee = (req, res, next) => {
-    Employee.findByIdAndUpdate(req.body._id, { $set: req.body}).then(() => {
-        res.status(200)
+    console.log('req.body', req.body)
+    Employee.findByIdAndUpdate(req.body.key, { $set: req.body}).then(() => {
+        res.status(200).json('done')
     }).catch(err => {
+        res.status(500)
+    })
+}
+exports.getEmployees = (req, res, next) => {
+    Employee.find().then(employees => {
+        res.status(200).json(employees)
+    }).catch(err => {
+        res.status(500)
+    })
+}
+exports.deleteEmployee = (req, res, next) => {
+    console.log('req.body', req.body)
+    Employee.findByIdAndDelete(req.body._id).then(res.status(200).json('done')).catch(err => {
         res.status(500)
     })
 }
@@ -220,7 +244,6 @@ exports.postTimeKeeping = (req, res, next) => {
         res.status(500)
     )
 }
-
 exports.getTimeKeeping = (req, res, next) => {
     let query = {}
     if (req.body.date) {

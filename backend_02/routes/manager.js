@@ -6,9 +6,12 @@ const isAuthMiddleware = require('../middleware/isAuth');
 
 router.post('/new-user', managerController.postNewUser);
 router.post('/edit-user', managerController.editUser)
+router.get('/get-user', managerController.getUsers)
 
 router.post('/new-employee', managerController.postEmployee);
 router.post('/edit-employee', managerController.editEmployee);
+router.post('/delete-employee', managerController.deleteEmployee);
+router.get('/get-employee', managerController.getEmployees)
 
 router.post('/new-product-type', managerController.postProductType);
 router.post('/delete-product-type', managerController.deleteProductType);
